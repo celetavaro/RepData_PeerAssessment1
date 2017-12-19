@@ -8,13 +8,32 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r}
+mydata <- read.csv("activity.csv")
+```
 
+
+## Histogram of the total number of steps each day
+```{r sumbyday}
+totalEachDay <- tapply(mydata$steps, mydata$date, sum, na.rm = TRUE)
+qplot(totalEachDay, ylab = "Frequency", xlab = "Total steps per day", binwidth = 5000)
+```
 
 ## What is mean total number of steps taken per day?
 
+```{r meanacrossdays}
+meanAcrossDays <- mean(totalEachDay)
+meanAcrossDays
+```
 
-
+## The median total number of steps taken per day:
+```{r medianacrossdays}
+medianAcrossDays <- median(totalEachDay)
+medianAcrossDays
+```
 ## What is the average daily activity pattern?
+
+
 
 
 
