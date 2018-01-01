@@ -30,9 +30,10 @@ qplot(totalEachDay, ylab = "Frequency", xlab = "Total steps per day", binwidth =
 
 
 ```r
+options(scipen = 999) # disables exponential notation 
 meanAcrossDays <- mean(totalEachDay)
 ```
-The mean number of steps taken per day: 1.0766189\times 10^{4}
+The mean number of steps taken per day: 10766.1886792
 
 
 ## The median total number of steps taken per day:
@@ -45,7 +46,13 @@ The median number of steps taken per day: 10765
 ## What is the average daily activity pattern?
 
 
+```r
+avgInterval <-tapply(cleanNA$steps, cleanNA$interval, mean, simplify = TRUE)
+df_new <- data.frame(avg = avgInterval, interval = as.integer(names(avgInterval)))
+plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab = "Average Number Of Steps Across Days")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
 
 ## Imputing missing values

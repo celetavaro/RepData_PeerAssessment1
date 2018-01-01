@@ -25,6 +25,7 @@ qplot(totalEachDay, ylab = "Frequency", xlab = "Total steps per day", binwidth =
 ## What is mean total number of steps taken per day?
 
 ```{r meanacrossdays}
+options(scipen = 999) # disables exponential notation 
 meanAcrossDays <- mean(totalEachDay)
 ```
 The mean number of steps taken per day: `r meanAcrossDays`
@@ -42,7 +43,6 @@ The median number of steps taken per day: `r medianAcrossDays`
 avgInterval <-tapply(cleanNA$steps, cleanNA$interval, mean, simplify = TRUE)
 df_new <- data.frame(avg = avgInterval, interval = as.integer(names(avgInterval)))
 plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab = "Average Number Of Steps Across Days")
-
 ```
 
 
