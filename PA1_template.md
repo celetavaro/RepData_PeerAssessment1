@@ -21,7 +21,7 @@ cleanNA <- subset(mydata, !is.na(mydata$steps))
 ```r
 library(ggplot2)
 totalEachDay <- tapply(cleanNA$steps, cleanNA$date, sum)
-qplot(totalEachDay, ylab = "Frequency", xlab = "Total steps per day", binwidth = 500)
+hist(totalEachDay, col = "purple", xlab = "Total Steps Each Day", main = "")
 ```
 
 ![](PA1_template_files/figure-html/sumbyday-1.png)<!-- -->
@@ -74,12 +74,12 @@ cursor <- is.na(df_imp$steps) # stores indices of missing values
 df_imp$steps[cursor] <- avgInterval[as.character(df_imp$interval[cursor])]
 df_imp$date <- as.Date(df_imp$date) # convert dates from integers
 ```
-Again, we'll make a histogram and calculate the median and median of steps aross days.
+Again, we'll make a histogram and calculate the mean and median of steps aross days.
 
 
 ```r
 totalImp <- with(df_imp, tapply(steps, date, sum))
-qplot(totalImp, xlab = "Total Steps per Day", ylab = "Frequency", binwidth = 500)
+hist(totalImp, col = "blue", xlab = "Total Steps per Day", main = "")
 ```
 
 ![](PA1_template_files/figure-html/imphist-1.png)<!-- -->
@@ -94,7 +94,8 @@ The imputed data mean steps across days calculates to 10766.1886792.
 The imputed data median steps across days calculates 
 to 10766.1886792
 
-When we compare this new histogram, mean, and median to the original data, we see that this dataset is not paricularly sensitive to missing values since the numbers look so similar between the two sets.
+
+First of all, while the histograms looks very similar in shape and distribution, it is important to notice the difference in scale on the y-axes when comparing the two.  Comparing the imputed data does show a higher frequency of days with more steps toward the middle of the graph, suggesting that there is some sensitivity to the missing data in this respect.  Comparing the mean and median values reveals very little change between the two sets. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -124,7 +125,7 @@ Next, we'll plot the average steps on weekdays and weekends for a comparison of 
 
 ```r
 wdayAvg <- aggregate(steps ~ time.of.week + interval, data = df_imp, FUN = mean)
-
+# generate plot
 g <- ggplot(wdayAvg, aes(interval, steps, colour = time.of.week))
 g <- g + geom_line() +
      facet_grid(time.of.week ~ .) +
@@ -134,3 +135,5 @@ print(g)
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+From a comparison of the plots, it looks like there is a spike of activity on weekdays earlier than on weekends, but across the day there is, on average, more activity during the weekend days.
