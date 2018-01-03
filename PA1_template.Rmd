@@ -59,8 +59,25 @@ Since we already have the avereages for each interval calculated in the avgInter
 ```{r}
 df_imp <- mydata # copy of original dataframe with missing values
 cursor <- is.na(df_imp$steps) # stores indices of missing values
-df_imp$steps[cursor] <- avgInterval[as.character(df_imp$steps[cursor])] 
 # set missing steps to equivalent interval's average steps
+df_imp$steps[cursor] <- avgInterval[as.character(df_imp$interval[cursor])]
+df_imp$date <- as.Date(df_imp$date) # convert dates from integers
+
 ```
+Again, we'll make a histogram and calculate the median and median of steps aross days.
+
+```{r imphist}
+totalImp <- with(df_imp, tapply(steps, date, sum))
+qplot(totalImp, xlab = "Total Steps per Day", ylab = "Frequency", binwidth = 500)
+impMean <- mean(totalImp)
+impMed <- median(totalImp)
+```
+
+The imputed data mean steps across days calculates to `r impMean`.
+
+The imputed data median steps across days calculates 
+to `r impMed`
+
+When we compare this new histogram, mean, and median to the original data, we see that this dataset is not paricularly sensitive to missing values since the numbers look so similar between the two sets.
 
 ## Are there differences in activity patterns between weekdays and weekends?

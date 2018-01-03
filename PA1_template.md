@@ -64,14 +64,36 @@ totalNA <- sum(is.na(mydata$steps))
 
 The total number of missing values is 2304
 
-Since we already have the avereages for each interval calculated with the processed dataset, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
+Since we already have the avereages for each interval calculated in the avgIntervals object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
 
 
 ```r
 df_imp <- mydata # copy of original dataframe with missing values
 cursor <- is.na(df_imp$steps) # stores indices of missing values
-df_imp$steps[cursor] <- avgInterval[as.character(df_imp$steps[cursor])] 
 # set missing steps to equivalent interval's average steps
+df_imp$steps[cursor] <- avgInterval[as.character(df_imp$interval[cursor])]
+df_imp$date <- as.Date(df_imp$date) # convert dates from integers
 ```
+Again, we'll make a histogram and calculate the median and median of steps aross days.
+
+
+```r
+totalImp <- with(df_imp, tapply(steps, date, sum))
+qplot(totalImp, xlab = "Total Steps per Day", ylab = "Frequency", binwidth = 500)
+```
+
+![](PA1_template_files/figure-html/imphist-1.png)<!-- -->
+
+```r
+impMean <- mean(totalImp)
+impMed <- median(totalImp)
+```
+
+The imputed data mean steps across days calculates to 10766.1886792.
+
+The imputed data median steps across days calculates 
+to 10766.1886792
+
+When we compare this new histogram, mean, and median to the original data, we see that this dataset is not paricularly sensitive to missing values since the numbers look so similar between the two sets.
 
 ## Are there differences in activity patterns between weekdays and weekends?
