@@ -19,7 +19,6 @@ cleanNA <- subset(mydata, !is.na(mydata$steps))
 ## Histogram of the total number of steps each day
 
 ```r
-library(ggplot2)
 totalEachDay <- tapply(cleanNA$steps, cleanNA$date, sum)
 hist(totalEachDay, col = "purple", xlab = "Total Steps Each Day", main = "")
 ```
@@ -54,6 +53,16 @@ plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab 
 
 ![](PA1_template_files/figure-html/averages-1.png)<!-- -->
 
+Next, we'll find the interval with the highest average number of steps.
+
+
+```r
+maxSteps <- max(df_new$avg)  
+dex <- which(df_new$avg == maxSteps, arr.ind = TRUE)
+maxInterval <- df_new$interval[dex]
+maxSteps <- as.integer(maxSteps)
+```
+The interval with the highest average number of steps is interval 835 with 206 steps.
 
 ## Imputing missing values
 
@@ -64,7 +73,7 @@ totalNA <- sum(is.na(mydata$steps))
 
 The total number of missing values is 2304
 
-Since we already have the avereages for each interval calculated in the avgIntervals object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
+Since we already have the avereages for each interval calculated in the <code>avgIntervals</code> object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
 
 
 ```r
@@ -124,6 +133,7 @@ Next, we'll plot the average steps on weekdays and weekends for a comparison of 
 
 
 ```r
+library(ggplot2)
 wdayAvg <- aggregate(steps ~ time.of.week + interval, data = df_imp, FUN = mean)
 # generate plot
 g <- ggplot(wdayAvg, aes(interval, steps, colour = time.of.week))
@@ -134,6 +144,6 @@ g <- g + geom_line() +
 print(g)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 From a comparison of the plots, it looks like there is a spike of activity on weekdays earlier than on weekends, but across the day there is, on average, more activity during the weekend days.

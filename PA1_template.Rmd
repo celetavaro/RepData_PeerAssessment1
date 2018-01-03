@@ -8,7 +8,7 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r}
+```{r echo = TRUE}
 mydata <- read.csv("activity.csv")
 mydata$date <- as.Date(mydata$date)
 cleanNA <- subset(mydata, !is.na(mydata$steps))
@@ -16,15 +16,14 @@ cleanNA <- subset(mydata, !is.na(mydata$steps))
 
 
 ## Histogram of the total number of steps each day
-```{r sumbyday}
-library(ggplot2)
+```{r sumbyday, echo = TRUE}
 totalEachDay <- tapply(cleanNA$steps, cleanNA$date, sum)
 hist(totalEachDay, col = "purple", xlab = "Total Steps Each Day", main = "")
 ```
 
 ## What is mean total number of steps taken per day?
 
-```{r meanacrossdays}
+```{r meanacrossdays, echo = TRUE}
 options(scipen = 999) # disables exponential notation 
 meanAcrossDays <- mean(totalEachDay)
 ```
@@ -32,31 +31,40 @@ The mean number of steps taken per day: `r meanAcrossDays`
 
 
 ## The median total number of steps taken per day:
-```{r medianacrossdays}
+```{r medianacrossdays, echo = TRUE}
 medianAcrossDays <- median(totalEachDay)
 ```
 The median number of steps taken per day: `r medianAcrossDays`
 
 ## What is the average daily activity pattern?
 
-```{r averages}
+```{r averages, echo = TRUE}
 avgInterval <-tapply(cleanNA$steps, cleanNA$interval, mean, simplify = TRUE)
 df_new <- data.frame(avg = avgInterval, interval = as.integer(names(avgInterval)))
 plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab = "Average Number Of Steps Across Days")
 ```
 
+Next, we'll find the interval with the highest average number of steps.
+
+```{r echo = TRUE}
+maxSteps <- max(df_new$avg)  
+dex <- which(df_new$avg == maxSteps, arr.ind = TRUE)
+maxInterval <- df_new$interval[dex]
+maxSteps <- as.integer(maxSteps)
+```
+The interval with the highest average number of steps is interval `r maxInterval` with `r maxSteps` steps.
 
 ## Imputing missing values
 
-```{r numMissing}
+```{r numMissing, echo = TRUE}
 totalNA <- sum(is.na(mydata$steps))
 ```
 
 The total number of missing values is `r totalNA`
 
-Since we already have the avereages for each interval calculated in the avgIntervals object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
+Since we already have the avereages for each interval calculated in the <code>avgIntervals</code> object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
 
-```{r}
+```{r echo = TRUE}
 df_imp <- mydata # copy of original dataframe with missing values
 cursor <- is.na(df_imp$steps) # stores indices of missing values
 # set missing steps to equivalent interval's average steps
@@ -66,7 +74,7 @@ df_imp$date <- as.Date(df_imp$date) # convert dates from integers
 ```
 Again, we'll make a histogram and calculate the mean and median of steps aross days.
 
-```{r imphist}
+```{r imphist, echo = TRUE}
 totalImp <- with(df_imp, tapply(steps, date, sum))
 hist(totalImp, col = "blue", xlab = "Total Steps per Day", main = "")
 impMean <- mean(totalImp)
@@ -87,7 +95,7 @@ First of all, while the histograms looks very similar in shape and distribution,
 
 First, we must differentiate between weekdays and weekends:
 
-```{r  warning = FALSE, message=FALSE}
+```{r  warning = FALSE, message=FALSE, echo = TRUE}
 library(lubridate)
     # helper function finds day of week, assigns weekday or weekend
     dow <- function(date){
@@ -105,7 +113,8 @@ df_imp$time.of.week <- with(df_imp, sapply(date, FUN = dow))
 
 Next, we'll plot the average steps on weekdays and weekends for a comparison of activity levels during these times of the week.
 
-```{r}
+```{r echo = TRUE}
+library(ggplot2)
 wdayAvg <- aggregate(steps ~ time.of.week + interval, data = df_imp, FUN = mean)
 # generate plot
 g <- ggplot(wdayAvg, aes(interval, steps, colour = time.of.week))
