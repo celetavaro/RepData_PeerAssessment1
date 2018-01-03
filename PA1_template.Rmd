@@ -39,7 +39,7 @@ The median number of steps taken per day: `r medianAcrossDays`
 
 ## What is the average daily activity pattern?
 
-```{r}
+```{r averages, cache = TRUE}
 avgInterval <-tapply(cleanNA$steps, cleanNA$interval, mean, simplify = TRUE)
 df_new <- data.frame(avg = avgInterval, interval = as.integer(names(avgInterval)))
 plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab = "Average Number Of Steps Across Days")
@@ -48,6 +48,19 @@ plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab 
 
 ## Imputing missing values
 
+```{r numMissing}
+totalNA <- sum(is.na(mydata$steps))
+```
 
+The total number of missing values is `r totalNA`
+
+Since we already have the avereages for each interval calculated in the avgIntervals object, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
+
+```{r}
+df_imp <- mydata # copy of original dataframe with missing values
+cursor <- is.na(df_imp$steps) # stores indices of missing values
+df_imp$steps[cursor] <- avgInterval[as.character(df_imp$steps[cursor])] 
+# set missing steps to equivalent interval's average steps
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?

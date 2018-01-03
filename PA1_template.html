@@ -155,6 +155,13 @@ plot(df_new$interval, df_new$avg, type = &quot;l&quot;, xlab = &quot;5-minute in
 </div>
 <div id="imputing-missing-values" class="section level2">
 <h2>Imputing missing values</h2>
+<pre class="r"><code>totalNA &lt;- sum(is.na(mydata$steps))</code></pre>
+<p>The total number of missing values is 2304</p>
+<p>Since we already have the avereages for each interval calculated with the processed dataset, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.</p>
+<pre class="r"><code>df_imp &lt;- mydata # copy of original dataframe with missing values
+cursor &lt;- is.na(df_imp$steps) # stores indices of missing values
+df_imp$steps[cursor] &lt;- avgInterval[as.character(df_imp$steps[cursor])] 
+# set missing steps to equivalent interval's average steps</code></pre>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>

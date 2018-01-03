@@ -52,11 +52,26 @@ df_new <- data.frame(avg = avgInterval, interval = as.integer(names(avgInterval)
 plot(df_new$interval, df_new$avg, type = "l", xlab = "5-minute interval" , ylab = "Average Number Of Steps Across Days")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/averages-1.png)<!-- -->
 
 
 ## Imputing missing values
 
 
+```r
+totalNA <- sum(is.na(mydata$steps))
+```
+
+The total number of missing values is 2304
+
+Since we already have the avereages for each interval calculated with the processed dataset, we will use those values for the equivalent intervals in the dataset in which we want to impute the values.
+
+
+```r
+df_imp <- mydata # copy of original dataframe with missing values
+cursor <- is.na(df_imp$steps) # stores indices of missing values
+df_imp$steps[cursor] <- avgInterval[as.character(df_imp$steps[cursor])] 
+# set missing steps to equivalent interval's average steps
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
