@@ -97,3 +97,40 @@ to 10766.1886792
 When we compare this new histogram, mean, and median to the original data, we see that this dataset is not paricularly sensitive to missing values since the numbers look so similar between the two sets.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+**Important to note:** for this last section of the markdown file, we'll be using the imputed dataset, not the original.
+
+First, we must differentiate between weekdays and weekends:
+
+
+```r
+library(lubridate)
+    # helper function finds day of week, assigns weekday or weekend
+    dow <- function(date){
+      
+      dayOfWeek <- weekdays(date)
+      
+      if(dayOfWeek %in% c("Saturday", "Sunday")){
+        return("weekend")
+      }else{ return ("weekday")} 
+      
+    }
+
+df_imp$time.of.week <- with(df_imp, sapply(date, FUN = dow))
+```
+
+Next, we'll plot the average steps on weekdays and weekends for a comparison of activity levels during these times of the week.
+
+
+```r
+wdayAvg <- aggregate(steps ~ time.of.week + interval, data = df_imp, FUN = mean)
+
+g <- ggplot(wdayAvg, aes(interval, steps, colour = time.of.week))
+g <- g + geom_line() +
+     facet_grid(time.of.week ~ .) +
+     xlab("5-minute Interval") +
+     ylab("Average Number of Steps")
+print(g)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
